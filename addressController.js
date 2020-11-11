@@ -73,7 +73,7 @@ Address.findById(req.params.address_id, function (err, address) {
 
 // Handle delete address
 exports.delete = function (req, res) {
-    Address.remove({
+    Address.deleteOne({
         _id: req.params.address_id
     }, function (err, address) {
         if (err) {
