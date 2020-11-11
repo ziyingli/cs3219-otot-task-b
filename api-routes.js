@@ -11,19 +11,18 @@ router.get('/', function (req, res) {
     });
 });
 
-// Import contact controller
-var contactController = require('./contactController');
+// Import address controller
+var addressController = require('./addressController');
 
-// Contact routes
-router.route('/contacts')
-    .get(contactController.index)
-    .post(contactController.new);
+// address routes
+router.route('/addresses')
+    .get(addressController.index)
+    .post(addressController.new);
     
-router.route('/contacts/:contact_id')
-    .get(contactController.view)
-    .patch(contactController.update)
-    .put(contactController.update)
-    .delete(contactController.delete);
+router.route('/addresses/:address_id')
+    .get(addressController.view)
+    .put(addressController.update)
+    .delete(addressController.delete);
 
 // Export API routes
 module.exports = router;
