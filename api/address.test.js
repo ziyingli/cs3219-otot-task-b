@@ -7,60 +7,74 @@ const Address = require("./addressModel"); // Link to your address model
 const mongoose = require("mongoose");
 const databaseName = "test";
 
+//////////////////////
+///    SET UP      ///
+//////////////////////
 beforeAll(async () => {
   const url = `mongodb://127.0.0.1/${databaseName}`;
   await mongoose.createConnection(url, { useNewUrlParser: true });
 });
 
-it("Gets the default endpoint", async done => {
-  // Sends GET Request to / endpoint
-  const response = await request.get("/");
-  expect(response.status).toBe(200);
-  expect(response.body.message).toBe("Hello World with Express");
-  done();
-});
-
-it("Gets the API endpoint", async done => {
-  // Sends GET Request to /api endpoint
-  const response = await request.get("/api");
-  expect(response.status).toBe(200);
-  expect(response.body.message).toBe("Welcome to AddressHub crafted with love!");
-  done();
-});
-
-it("Gets all addresses", async done => {
-  // Sends GET Request to /api/addresses endpoint
-  const response = await request.get("/api/addresses");
-  expect(response.status).toBe(200);
-  expect(response.body.message).toBe("Addresses retrieved successfully");
-  done();
-});
-
-it("Should save address to database", async done => {
-  const res = await request.post("/api/addresses/").send({
-    postal_code:"120",
-    block:"42",
-    street:"jurong",
-    unit:"#03-03"
+//////////////////////
+///     TESTS      ///
+//////////////////////
+describe("GET request", () => {
+  it("Gets the default endpoint", async done => {
+    // Sends GET Request to / endpoint
+    const response = await request.get("/");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Hello World with Express");
+    done();
   });
-
-  // Searches the address in the database
-  const address = await Address.findOne({ 
-    postal_code:"120",
-    block:"42",
-    street:"jurong",
-    unit:"#03-03"
+  
+  it("Gets the API endpoint", async done => {
+    // Sends GET Request to /api endpoint
+    const response = await request.get("/api");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Welcome to AddressHub crafted with love!");
+    done();
   });
-  expect(address.postal_code).toBeTruthy();
-  expect(address.block).toBeTruthy();
-  expect(address.street).toBeTruthy();
-  expect(address.unit).toBeTruthy();
-
-  // console.log(address);
-
-  done();
+  
+  it("Gets all addresses", async done => {
+    // Sends GET Request to /api/addresses endpoint
+    const response = await request.get("/api/addresses");
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Addresses retrieved successfully");
+    done();
+  });
 });
 
+describe("POST request", () => {
+  it("Should save address to database", async done => {
+    const res = await request.post("/api/addresses/").send({
+      postal_code:"120",
+      block:"42",
+      street:"jurong",
+      unit:"#03-03"
+    });
+  
+    // Searches the address in the database
+    const address = await Address.findOne({ 
+      postal_code:"120",
+      block:"42",
+      street:"jurong",
+      unit:"#03-03"
+    });
+    expect(address.postal_code).toBeTruthy();
+    expect(address.block).toBeTruthy();
+    expect(address.street).toBeTruthy();
+    expect(address.unit).toBeTruthy();
+  
+    // console.log(address);
+  
+    done();
+  });
+});
+
+
+//////////////////////
+///   TEAR DOWN    ///
+//////////////////////
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
   for (const collectionName of collections) {
@@ -99,4 +113,10 @@ afterAll(async () => {
   await dropAllCollections();
   // Closes the Mongoose connection
   await mongoose.connection.close();
+});
+
+afterAll(done => {
+  // Closing the DB connection
+  mongoose.connection.close();
+  done();
 });
