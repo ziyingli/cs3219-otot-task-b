@@ -36,37 +36,67 @@ it("Gets all addresses", async done => {
   done();
 });
 
-// it("Should save address to database", done => {
-//   const res = request.post("/api/addresses/").send({
-//     postal_code:"120",
-//     block:"42",
-//     street:"jurong",
-//     unit:"#03-03"
-//   });
+it("Should save address to database", async done => {
+  const res = await request.post("/api/addresses/").send({
+    postal_code:"120",
+    block:"42",
+    street:"jurong",
+    unit:"#03-03"
+  });
 
   // Searches the address in the database
-//   const address = Address.findOne({ 
-//     postal_code:"120",
-//     block:"42",
-//     street:"jurong",
-//     unit:"#03-03"
-//   });
-//   // expect(address.postal_code).toBeTruthy();
-//   // expect(address.block).toBeTruthy();
+  const address = await Address.findOne({ 
+    postal_code:"120",
+    block:"42",
+    street:"jurong",
+    unit:"#03-03"
+  });
+  expect(address.postal_code).toBeTruthy();
+  expect(address.block).toBeTruthy();
+  expect(address.street).toBeTruthy();
+  expect(address.unit).toBeTruthy();
 
-//   console.log(address);
+  // console.log(address);
 
-//   done();
-// });
+  done();
+});
 
-// async function removeAllCollections() {
-//   const collections = Object.keys(mongoose.connection.collections);
-//   for (const collectionName of collections) {
-//     const collection = mongoose.connection.collections[collectionName];
-//     await collection.deleteMany();
-//   }
-// }
+async function removeAllCollections() {
+  const collections = Object.keys(mongoose.connection.collections);
+  for (const collectionName of collections) {
+    const collection = mongoose.connection.collections[collectionName];
+    await collection.deleteMany();
+  }
+}
 
-// afterEach(async () => {
-//   await removeAllCollections();
-// });
+afterEach(async () => {
+  await removeAllCollections();
+});
+
+async function dropAllCollections() {
+  const collections = Object.keys(mongoose.connection.collections);
+  for (const collectionName of collections) {
+    const collection = mongoose.connection.collections[collectionName];
+    try {
+      await collection.drop();
+    } catch (error) {
+      // This error happens when you try to drop a collection that's already dropped. Happens infrequently.
+      // Safe to ignore.
+      if (error.message === "ns not found") return;
+
+      // This error happens when you use it.todo.
+      // Safe to ignore.
+      if (error.message.includes("a background operation is currently running"))
+        return;
+
+      console.log(error.message);
+    }
+  }
+}
+
+// Disconnect Mongoose
+afterAll(async () => {
+  await dropAllCollections();
+  // Closes the Mongoose connection
+  await mongoose.connection.close();
+});
