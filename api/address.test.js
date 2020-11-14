@@ -15,6 +15,22 @@ beforeAll(async () => {
   await mongoose.createConnection(url, { useNewUrlParser: true });
 });
 
+const dummyAddresses = [
+  {
+    postal_code: "111",
+    block: "1",
+    street: "jurong",
+    unit: "#01-01"
+  }
+]
+
+beforeEach(async () => {
+  for (const a of dummyAddresses) {
+    const address = new Address(a);
+    await address.save();
+  }
+});
+
 //////////////////////
 ///     TESTS      ///
 //////////////////////
@@ -47,26 +63,59 @@ describe("GET request", () => {
 describe("POST request", () => {
   it("Should save address to database", async done => {
     const res = await request.post("/api/addresses/").send({
-      postal_code:"120",
-      block:"42",
-      street:"jurong",
-      unit:"#03-03"
+      postal_code: "222",
+      block: "22",
+      street: "jurong",
+      unit: "#02-02"
     });
   
     // Searches the address in the database
     const address = await Address.findOne({ 
-      postal_code:"120",
-      block:"42",
-      street:"jurong",
-      unit:"#03-03"
+      postal_code: "222",
+      block: "22",
+      street: "jurong",
+      unit: "#02-02"
     });
     expect(address.postal_code).toBeTruthy();
     expect(address.block).toBeTruthy();
     expect(address.street).toBeTruthy();
     expect(address.unit).toBeTruthy();
+    expect(res.body.message).toBe("New address created!");
+
   
-    // console.log(address);
+    done();
+  });
+});
+
+describe("PUT request", () => {
+  it("Should edit the address in database", async done => {
+    // find the dummy address
+    const address = await Address.findOne({ 
+      postal_code: "111",
+      block: "1",
+      street: "jurong",
+      unit: "#01-01"
+    });
+
+    const addressId = address._id;
+
+    const res = await request.put(`/api/addresses/${addressId}`).send({
+      postal_code: "456",
+      block: "45",
+      street: "pasir ris"
+    });
   
+    // Searches the address in the database
+    const edited = await Address.findOne({ 
+      postal_code: "456",
+      block: "45",
+      street: "pasir ris"
+    });
+
+    expect(address.postal_code).toBeTruthy();
+    expect(address.block).toBeTruthy();
+    expect(address.street).toBeTruthy();
+    expect(res.body.message).toBe("Address Info updated");
     done();
   });
 });
@@ -113,10 +162,4 @@ afterAll(async () => {
   await dropAllCollections();
   // Closes the Mongoose connection
   await mongoose.connection.close();
-});
-
-afterAll(done => {
-  // Closing the DB connection
-  mongoose.connection.close();
-  done();
 });
