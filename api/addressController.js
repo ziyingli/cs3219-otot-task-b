@@ -10,7 +10,7 @@ exports.index = function (req, res) {
         }
         res.json({
             status: "success",
-            message: "Address retrieved successfully",
+            message: "Addresses retrieved successfully",
             data: addresses
         });
     });

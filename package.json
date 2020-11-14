@@ -4,7 +4,8 @@
   "description": "An app demonstrating simple Restful API implementation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": [
     "api",
@@ -17,5 +18,12 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "mongoose": "^5.10.7"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "supertest": "^6.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
