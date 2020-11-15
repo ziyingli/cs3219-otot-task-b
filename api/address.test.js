@@ -9,9 +9,9 @@ const databaseName = "test";
 //////////////////////
 ///    SET UP      ///
 //////////////////////
-beforeAll(async () => {
+beforeAll(async done => {
   const url = `mongodb://127.0.0.1/${databaseName}`;
-  await mongoose.createConnection(url, { useNewUrlParser: true });
+  done();
 });
 
 const dummyAddresses = [
@@ -23,11 +23,12 @@ const dummyAddresses = [
   }
 ]
 
-beforeEach(async () => {
+beforeEach(async done => {
   for (const a of dummyAddresses) {
     const address = new Address(a);
     await address.save();
   }
+  done();
 });
 
 //////////////////////
@@ -240,8 +241,9 @@ async function removeAllCollections() {
   }
 }
 
-afterEach(async () => {
+afterEach(async done => {
   await removeAllCollections();
+  done();
 });
 
 async function dropAllCollections() {
@@ -249,7 +251,7 @@ async function dropAllCollections() {
   for (const collectionName of collections) {
     const collection = mongoose.connection.collections[collectionName];
     try {
-      await collection.drop();
+      await collection.deleteMany({});
     } catch (error) {
       // This error happens when you try to drop a collection that's already dropped. Happens infrequently.
       // Safe to ignore.
@@ -266,8 +268,9 @@ async function dropAllCollections() {
 }
 
 // Disconnect Mongoose
-afterAll(async () => {
+afterAll(async done => {
   await dropAllCollections();
   // Closes the Mongoose connection
   await mongoose.connection.close();
+  done();
 });
