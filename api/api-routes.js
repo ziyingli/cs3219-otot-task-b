@@ -7,12 +7,12 @@ let router = require('express').Router();
 router.get('/', function (req, res) {
     res.json({
         status: 'API Its Working',
-        message: 'Welcome to AddressHub crafted with love!'
+        message: 'Welcome to AddressBook !'
     });
 });
 
 // Import address controller
-var addressController = require('./addressController');
+const addressController = require('./addressController');
 
 // address routes
 router.route('/addresses')

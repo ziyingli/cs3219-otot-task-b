@@ -48,7 +48,7 @@ describe("GET request", () => {
     // Sends GET Request to /api endpoint
     const response = await request.get("/api");
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Welcome to AddressHub crafted with love!");
+    expect(response.body.message).toBe("Welcome to AddressBook !");
     done();
   });
   

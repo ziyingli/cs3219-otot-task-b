@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 // Setup schema
-var addressSchema = mongoose.Schema({
+const addressSchema = mongoose.Schema({
     postal_code: {
         type: Number,
         required: true
@@ -20,7 +20,7 @@ var addressSchema = mongoose.Schema({
     }
 });
 // Export Address model
-var Address = module.exports = mongoose.model('address', addressSchema);
+const Address = module.exports = mongoose.model('address', addressSchema);
 module.exports.get = function (callback, limit) {
     Address.find(callback).limit(limit);
 }

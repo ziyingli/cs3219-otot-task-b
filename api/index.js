@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 // Connect to Mongoose and set connection variable
 mongoose.connect('mongodb+srv://ziyingli:ziyingli99@otot-task-b.x079u.mongodb.net/db?retryWrites=true&w=majority&authSource=admin', { useNewUrlParser: true, useUnifiedTopology: true });
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 // Added check for DB connection
 if(!db)
