@@ -160,6 +160,49 @@ describe("PUT request", () => {
     expect(res.body.message).toBe("Address Info updated");
     done();
   });
+
+  it("Should throw error when required fields are missing", async done => {
+    // find the dummy address
+    const address = await Address.findOne({ 
+      postal_code: "111",
+      block: "1",
+      street: "jurong",
+      unit: "#01-01"
+    });
+
+    const addressId = address._id;
+
+    const res = await request.put(`/api/addresses/${addressId}`).send({
+      postal_code: "222",
+      block: "22",
+      unit: "#02-02"
+    });
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Required fields cannot be blank");
+    done();
+  });
+
+  it("Should throw error when fields are of wrong type", async done => {
+    // find the dummy address
+    const address = await Address.findOne({ 
+      postal_code: "111",
+      block: "1",
+      street: "jurong",
+      unit: "#01-01"
+    });
+
+    const addressId = address._id;
+
+    const res = await request.put(`/api/addresses/${addressId}`).send({
+      postal_code: "222a",
+      block: "22",
+      street: "jurong",
+      unit: "#02-02"
+    });
+    expect(res.status).toBe(500);
+    expect(res.text).toBe("Postal code must be a number");
+    done();
+  });
 });
 
 describe("DELETE request", () => {
