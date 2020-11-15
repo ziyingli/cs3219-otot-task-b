@@ -1,4 +1,4 @@
-Address = require('./addressModel');
+Address = require("./addressModel");
 // Handle index actions
 exports.index = function (req, res) {
     Address.get(function (err, addresses) {
@@ -42,7 +42,7 @@ exports.new = function (req, res) {
             return res.status(500).json(err);
         }
         res.json({
-            message: 'New address created!',
+            message: "New address created!",
             data: address
         });
     });
@@ -55,7 +55,7 @@ exports.view = function (req, res) {
             return res.status(500).send(err);
         }
         res.json({
-            message: 'Address details loading..',
+            message: "Address details loading..",
             data: address
         });
     });
@@ -63,21 +63,31 @@ exports.view = function (req, res) {
 
 // Handle update address info
 exports.update = function (req, res) {
-Address.findById(req.params.address_id, function (err, address) {
-        if (err) {
-            return res.status(500).send(err);
+    Address.findById(req.params.address_id, function (err, address) {
+        const postal_code = req.body.postal_code;
+        const street = req.body.street;
+        const block = req.body.block;
+        const unit = req.body.unit;
+        
+        if (!postal_code || !street || !block) {
+            return res.status(500).send("Required fields cannot be blank");
         }
-        address.postal_code = req.body.postal_code ? req.body.postal_code : address.postal_code;
-        address.street = req.body.street;
-        address.block = req.body.block;
-        address.unit = req.body.unit;
-        // save the address and check for errors
+        if (!(/^\d+$/.test(postal_code))) {
+            return res.status(500).send("Postal code must be a number");
+        }
+    
+        address.postal_code = postal_code;
+        address.street = street;
+        address.block = block;
+        address.unit = unit;
+    
+        // save the address and check for other errors
         address.save(function (err) {
             if (err) {
                 return res.status(500).json(err);
             }
             res.json({
-                message: 'Address Info updated',
+                message: "Address Info updated",
                 data: address
             });
         });
@@ -94,7 +104,7 @@ exports.delete = function (req, res) {
         }
         res.json({
             status: "success",
-            message: 'Address deleted'
+            message: "Address deleted"
         });
     });
 };
