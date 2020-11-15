@@ -82,7 +82,6 @@ describe("POST request", () => {
     expect(address.unit).toBeTruthy();
     expect(res.body.message).toBe("New address created!");
 
-  
     done();
   });
 });
@@ -112,10 +111,33 @@ describe("PUT request", () => {
       street: "pasir ris"
     });
 
-    expect(address.postal_code).toBeTruthy();
-    expect(address.block).toBeTruthy();
-    expect(address.street).toBeTruthy();
+    expect(edited.postal_code).toBeTruthy();
+    expect(edited.block).toBeTruthy();
+    expect(edited.street).toBeTruthy();
     expect(res.body.message).toBe("Address Info updated");
+    done();
+  });
+});
+
+describe("DELETE request", () => {
+  it("Should delete the address in database", async done => {
+    // find the dummy address
+    const address = await Address.findOne({ 
+      postal_code: "111",
+      block: "1",
+      street: "jurong",
+      unit: "#01-01"
+    });
+
+    const addressId = address._id;
+
+    const res = await request.delete(`/api/addresses/${addressId}`);
+    const deleted = await Address.findOne({
+      postal_code: "111"
+    });
+    expect(deleted).toBeNull();
+    expect(res.body.message).toBe("Address deleted");
+
     done();
   });
 });
