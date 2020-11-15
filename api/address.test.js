@@ -1,7 +1,6 @@
 const app = require("./index"); 
 const supertest = require("supertest");
 const request = supertest(app);
-const apiRoutes = require("./api-routes");
 
 const Address = require("./addressModel"); // Link to your address model
 const mongoose = require("mongoose");
@@ -35,7 +34,7 @@ beforeEach(async () => {
 ///     TESTS      ///
 //////////////////////
 describe("GET request", () => {
-  it("Gets the default endpoint", async done => {
+  it("Should get the default endpoint", async done => {
     // Sends GET Request to / endpoint
     const response = await request.get("/");
     expect(response.status).toBe(200);
@@ -43,7 +42,7 @@ describe("GET request", () => {
     done();
   });
   
-  it("Gets the API endpoint", async done => {
+  it("Should get the API endpoint", async done => {
     // Sends GET Request to /api endpoint
     const response = await request.get("/api");
     expect(response.status).toBe(200);
@@ -51,7 +50,7 @@ describe("GET request", () => {
     done();
   });
   
-  it("Gets all addresses", async done => {
+  it("Should get all addresses", async done => {
     // Sends GET Request to /api/addresses endpoint
     const response = await request.get("/api/addresses");
     expect(response.status).toBe(200);
@@ -59,7 +58,7 @@ describe("GET request", () => {
     done();
   });
 
-  it("Gets address by Id", async done => {
+  it("Should get address by Id", async done => {
     // find the dummy address
     const address = await Address.findOne({ 
       postal_code: "111",
@@ -74,7 +73,7 @@ describe("GET request", () => {
     const found = await Address.findOne({
       postal_code: "111"
     });
-    console.log(found);
+
     expect(found).toStrictEqual(address);
     expect(res.body.message).toBe("Address details loading..");
     done();
