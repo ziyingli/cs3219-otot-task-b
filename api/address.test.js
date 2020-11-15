@@ -11,6 +11,7 @@ const databaseName = "test";
 //////////////////////
 beforeAll(async done => {
   const url = `mongodb://127.0.0.1/${databaseName}`;
+  await mongoose.createConnection(url, { useNewUrlParser: true });
   done();
 });
 
