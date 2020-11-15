@@ -19,7 +19,7 @@ exports.index = function (req, res) {
 // Handle create address actions
 exports.new = function (req, res) {
     var address = new Address();
-    address.postal_code = req.body.postal_code ? req.body.postal_code : address.postal_code;
+    address.postal_code = req.body.postal_code;
     address.street = req.body.street;
     address.block = req.body.block;
     address.unit = req.body.unit;
