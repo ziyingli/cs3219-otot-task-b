@@ -58,6 +58,27 @@ describe("GET request", () => {
     expect(response.body.message).toBe("Addresses retrieved successfully");
     done();
   });
+
+  it("Gets address by Id", async done => {
+    // find the dummy address
+    const address = await Address.findOne({ 
+      postal_code: "111",
+      block: "1",
+      street: "jurong",
+      unit: "#01-01"
+    });
+
+    const addressId = address._id;
+
+    const res = await request.get(`/api/addresses/${addressId}`);
+    const found = await Address.findOne({
+      postal_code: "111"
+    });
+    console.log(found);
+    expect(found).toStrictEqual(address);
+    expect(res.body.message).toBe("Address details loading..");
+    done();
+  });
 });
 
 describe("POST request", () => {
