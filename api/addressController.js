@@ -18,12 +18,25 @@ exports.index = function (req, res) {
 
 // Handle create address actions
 exports.new = function (req, res) {
-    var address = new Address();
-    address.postal_code = req.body.postal_code;
-    address.street = req.body.street;
-    address.block = req.body.block;
-    address.unit = req.body.unit;
-// save the address and check for errors
+    const address = new Address();
+    const postal_code = req.body.postal_code;
+    const street = req.body.street;
+    const block = req.body.block;
+    const unit = req.body.unit;
+    
+    if (!postal_code || !street || !block) {
+        return res.status(500).send("Required fields cannot be blank");
+    }
+    if (!(/^\d+$/.test(postal_code))) {
+        return res.status(500).send("Postal code must be a number");
+    }
+
+    address.postal_code = postal_code;
+    address.street = street;
+    address.block = block;
+    address.unit = unit;
+
+// save the address and check for other errors
     address.save(function (err) {
         if (err) {
             return res.status(500).json(err);
