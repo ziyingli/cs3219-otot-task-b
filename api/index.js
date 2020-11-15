@@ -25,9 +25,6 @@ if(!db)
 else
     console.log("Db connected successfully")
 
-// Setup server port
-var port = process.env.PORT || 8080;
-
 // Send message for default URL
 app.get('/', async (req, res) => {
     res.json({ message: 'Hello World with Express'});
@@ -35,9 +32,5 @@ app.get('/', async (req, res) => {
 
 // Use Api routes in the App
 app.use('/api', apiRoutes);
-// Launch app to listen to specified port
-app.listen(port, function () {
-    console.log("Running AddressHub on port " + port);
-});
 
 module.exports = app
