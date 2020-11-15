@@ -3,9 +3,10 @@
 ## Run API locally
 Preqrequisites: ensure that MongoDB is installed and running (`brew services start mongodb-community` for macOS)
 1. `cd` into `api` folder
-2. run `npm run dev`
+2. Run `npm run dev`
+3. Access REST API endpoints via http://localhost:8080/api/addresses
 
-## Test endpoints on Postman
+## Accessing endpoints on Postman
 
 **LOCAL testing**
 http://localhost:8080/
@@ -41,10 +42,10 @@ UPDATE single address by id
 - Params: 
 ```js
 {
-    "postal_code":"120",
-    "block":"42",
-    "street":"jurong",
-    "unit":"#3-3" // optional
+    "postal_code":"120",    // integer, required
+    "block":"42",           // string, required
+    "street":"bedok",      // string, required
+    "unit":"#03-03"           // string, optional
 }
 ```
 
@@ -52,11 +53,13 @@ DELETE single address by id
 - Request: DELETE
 - Route: /api/addresses/:id
 
+## Running tests locally
+1. `npm test` 
+
 ## Continuous Deployment
 Vercel is the serverless service used for automated deployment. The endpoints will be automatically deployed every time code is pushed to the repository.
 
 ## Continuous Integration
-GitHub Actions is used for automated testing. The test suite written makes use of Jest and Supertest and will be run automatically every time code is pushed to the repository.
+GitHub Actions is used for automated testing. The test suite written makes use of Jest and Supertest and will be run automatically every time code is pushed to the repository. The workflow is written in `.github/workflows/node.js.yml` and specifies the commands and environment to run the tests in. Specifically, the workflow will run `npm test`, which will trigger the tests to be run using Jest. 
 
-## Running tests locally
-1. `npm test`
+It is important to note that since GitHub Actions does not have a MongoDB server, it has to be explicitly included in the `.yml` file. Also, since there will only be one MongoDB instance created, concurrent tests cannot be conducted as the database will be inconsistent across parallel tests, resulting in failing builds. 
